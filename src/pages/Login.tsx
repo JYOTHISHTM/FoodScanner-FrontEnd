@@ -1,24 +1,27 @@
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 
 const Login = () => {
   const navigate = useNavigate();
-const handleSuccess = async (credentialResponse: any) => {
-  try {
-    const res = await axios.post("http://localhost:4000/api/auth/google", {
-      token: credentialResponse.credential,
-    });
+  const { login } = useAuth();
 
-    localStorage.setItem("token", res.data.token);
+  const handleSuccess = async (credentialResponse: any) => {
+    try {
+      const res = await axios.post("http://localhost:4000/api/auth/google", {
+        token: credentialResponse.credential,
+      });
 
-    navigate("/");
+      localStorage.setItem("token", res.data.token);
+      login(res.data.token);
+      navigate("/");
 
-  } catch (error) {
-    console.error("Login Failed", error);
-  }
-};
+    } catch (error) {
+      console.error("Login Failed", error);
+    }
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
