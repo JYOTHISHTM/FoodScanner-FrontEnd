@@ -21,7 +21,7 @@ function Layout() {
   return (
     <div className="flex flex-col min-h-screen">
       
-      {!hideLayout && <Navbar />}
+     <Navbar />
 
       <main className="flex-grow">
         <Routes>

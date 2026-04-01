@@ -5,9 +5,9 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-green-50 flex justify-center items-center px-4">
-      
+
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
-        
+
         {/* Avatar */}
         <div className="flex justify-center mb-4">
           <div className="w-24 h-24 rounded-full bg-green-200 flex items-center justify-center text-3xl font-bold text-green-800">
@@ -30,7 +30,7 @@ const Profile = () => {
 
         {/* Info Section */}
         <div className="space-y-3 text-left">
-          
+
           <div className="bg-green-100 p-3 rounded-lg">
             <p className="text-sm text-green-700">Full Name</p>
             <p className="font-semibold text-green-900">
