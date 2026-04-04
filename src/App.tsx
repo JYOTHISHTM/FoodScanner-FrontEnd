@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import History from "./pages/History";
+import ScanHistory from "./pages/ScanHistory";
 import ProductInfo from "./pages/ProductInfo";
 
 import Navbar from "./components/Navbar";
@@ -29,7 +29,7 @@ function Layout() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><ScanHistory /></ProtectedRoute>} />
           <Route path="/product/:id" element={<ProtectedRoute><ProductInfo /></ProtectedRoute>} />
         </Routes>
       </main>
