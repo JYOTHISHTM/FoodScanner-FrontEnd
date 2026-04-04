@@ -3,8 +3,15 @@ import type { ReactNode } from "react";
 
 
 interface UserType {
+  _id: string;
   name: string;
   email: string;
+  allergies?: string[];
+  height?: string;
+  age?: number;
+  weight?: string
+  gender?:string
+
 }
 
 interface AuthContextType {
