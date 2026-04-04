@@ -4,7 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider } from "./context/AuthContext";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 createRoot(document.getElementById('root')!).render(
@@ -12,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <AuthProvider>
         <App />
+          <ToastContainer position="top-right" autoClose={2000} />
       </AuthProvider>
     </StrictMode>
   </GoogleOAuthProvider>
