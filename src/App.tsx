@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import ScanHistory from "./pages/ScanHistory";
+import ScanHistory from "./pages/History";
 import ProductInfo from "./pages/ProductInfo";
 
 import Navbar from "./components/Navbar";
