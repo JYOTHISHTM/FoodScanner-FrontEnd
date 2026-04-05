@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getScans } from "../services/scanService";
+import { getHistory } from "../services/historyService";
 
-const ScanHistory = () => {
+const History = () => {
   const [scans, setScans] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
@@ -11,7 +11,7 @@ const ScanHistory = () => {
   const fetchScans = async () => {
     setLoading(true);
     try {
-      const data = await getScans(page, sort);
+      const data = await getHistory(page, sort);
       setScans(data.scans);
       setPages(data.pages);
     } catch (err) {
@@ -113,4 +113,4 @@ const ScanHistory = () => {
   );
 };
 
-export default ScanHistory;
+export default History;
