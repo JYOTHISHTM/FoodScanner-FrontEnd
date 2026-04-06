@@ -6,9 +6,11 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import ScanHistory from "./pages/History";
 import ProductInfo from "./pages/ProductInfo";
-
+import Favorites from "./pages/Favorites"
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
+
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -30,6 +32,7 @@ function Layout() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><ScanHistory /></ProtectedRoute>} />
+          <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
           <Route path="/product/:id" element={<ProtectedRoute><ProductInfo /></ProtectedRoute>} />
         </Routes>
       </main>

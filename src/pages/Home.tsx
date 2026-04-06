@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { fetchProduct } from "../services/productService";
+import { useAuth } from "../hooks/useAuth";
 
 const Home = () => {
-  const [barcode, setBarcode] = useState("");
+  const [productId, setProductId] = useState("");
   const [product, setProduct] = useState<any>(null);
-
+  const { user } = useAuth();
   const handleSearch = async () => {
-    const res = await fetchProduct(barcode);
+    if (!user?._id) return;
+    const res = await fetchProduct(productId, user._id);
     setProduct(res);
   };
 
@@ -31,9 +33,9 @@ const Home = () => {
       {/* Input */}
       <div className="flex gap-2 mb-6">
         <input
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          placeholder="Enter barcode"
+          value={productId}
+          onChange={(e) => setProductId(e.target.value)}
+          placeholder="Enter productId"
           className="border p-2 rounded w-64"
         />
         <button
