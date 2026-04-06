@@ -27,6 +27,7 @@ const Navbar = () => {
           <Link to="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
           <Link to="/profile" className={linkClass("/profile")}>Profile</Link>
           <Link to="/history" className={linkClass("/history")}>History</Link>
+          <Link to="/favorites" className={linkClass("/favorites")}>Favorites</Link>
         </div>
       )}
 
