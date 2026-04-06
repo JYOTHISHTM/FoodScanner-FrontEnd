@@ -1,19 +1,52 @@
 import { useEffect, useState } from "react";
 import { getHistory } from "../services/historyService";
+import {
+  toggleFavorite,
+  checkFavorite,
+} from "../services/favoritesService";
+import { useAuth } from "../hooks/useAuth";
 
 const History = () => {
   const [scans, setScans] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [sort, setSort] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { user } = useAuth();
+  const userId = user?._id;
+
+  // ✅ Fetch scans + favorites
   const fetchScans = async () => {
+    if (!userId) return;
+
     setLoading(true);
     try {
-      const data = await getHistory(page, sort);
-      setScans(data.scans);
+      const data = await getHistory(page, sort,userId);
+      setScans(data.scans);      
       setPages(data.pages);
+      
+      console.log("FIRST SCAN 👉", data.scans[0]); 
+      console.log("FULL SCAN 👉", JSON.stringify(data.scans[0], null, 2));
+      
+      const favMap: Record<string, boolean> = {};
+      
+   await Promise.all(
+  data.scans.map(async (item: any) => {
+    
+    if (!item.productId) return;
+
+    try {
+      const res = await checkFavorite(userId, item.productId);
+      favMap[item.productId] = res.data.isFavorite;
+    } catch {
+      favMap[item.productId] = false;
+    }
+  })
+);
+
+      setFavorites(favMap);
     } catch (err) {
       console.error(err);
     }
@@ -21,13 +54,31 @@ const History = () => {
   };
 
   useEffect(() => {
+    if (!userId) return;
     fetchScans();
-  }, [page, sort]);
+  }, [page, sort, userId]);
+
+  // ✅ Toggle favorite
+  const handleFav = async (productId : string) => {
+    if (!userId) return;
+
+    // optimistic update
+    setFavorites((prev) => ({
+      ...prev,
+      [productId ]: !prev[productId ],
+    }));
+
+    try {
+      await toggleFavorite(userId, productId );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="p-6">
 
-      {/* Show controls ONLY if data exists */}
+      {/* Controls */}
       {scans.length > 0 && (
         <div className="flex justify-between mb-4">
           <select
@@ -57,11 +108,13 @@ const History = () => {
             key={item._id}
             className="flex items-center gap-4 bg-white shadow rounded-lg p-4"
           >
+            {/* Image */}
             <img
               src={item.image}
               className="w-16 h-16 object-contain"
             />
 
+            {/* Info */}
             <div className="flex-1">
               <h3 className="font-bold">{item.name}</h3>
               {item.brand && (
@@ -73,12 +126,24 @@ const History = () => {
               </p>
             </div>
 
+            {/* ❤️ Favorite Button */}
+            <button
+              onClick={() => handleFav(item.productId)}
+              className={`text-2xl transition ${favorites[item.productId]
+                ? "text-blue-500"
+                : "text-gray-400"
+                }`}
+            >
+              ♥
+            </button>
+
+            {/* Score */}
             <div
               className={`px-3 py-1 rounded text-white ${item.score > 80
-                  ? "bg-green-500"
-                  : item.score > 50
-                    ? "bg-yellow-500"
-                    : "bg-red-500"
+                ? "bg-green-500"
+                : item.score > 50
+                  ? "bg-yellow-500"
+                  : "bg-red-500"
                 }`}
             >
               {item.score}
@@ -87,7 +152,7 @@ const History = () => {
         ))}
       </div>
 
-      {/* Show pagination ONLY if data exists */}
+      {/* Pagination */}
       {scans.length > 0 && (
         <div className="flex justify-center gap-2 mt-6">
           <button
@@ -98,7 +163,9 @@ const History = () => {
             Prev
           </button>
 
-          <span>{page} / {pages}</span>
+          <span>
+            {page} / {pages}
+          </span>
 
           <button
             disabled={page === pages}
