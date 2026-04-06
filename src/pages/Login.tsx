@@ -68,7 +68,7 @@ const Login = () => {
       <div className="hidden md:flex w-1/2 bg-green-100 items-center justify-center">
         <img
           src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc"
-          alt="barcode"
+          alt="productId"
           className="w-2/3 rounded-xl shadow-lg"
         />
       </div>
