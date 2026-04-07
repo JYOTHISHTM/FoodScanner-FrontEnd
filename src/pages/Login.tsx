@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
+
+
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  
 
   const handleSuccess = async (credentialResponse: any) => {
     try {
@@ -24,10 +28,10 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex">
-      
+
       {/* LEFT SIDE */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-green-50 px-6">
-        
+
         <h1 className="text-3xl font-bold text-green-800 mb-6">
           Welcome Back
         </h1>
@@ -54,7 +58,7 @@ const Login = () => {
             onClick={() => navigate("/email-login")}
             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"
           >
-            Continue with Email
+            Continue with email
           </button>
 
           {/* Caution */}
