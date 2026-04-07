@@ -9,7 +9,7 @@ import ProductInfo from "./pages/ProductInfo";
 import Favorites from "./pages/Favorites"
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
+import EmailLogin from "./pages/EmailLogin";
 
 
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -27,6 +27,8 @@ function Layout() {
 
       <main className="flex-grow">
         <Routes>
+          <Route path="/email-login" element={<PublicRoute><EmailLogin /></PublicRoute>} />
+
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
