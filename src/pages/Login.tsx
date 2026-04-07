@@ -9,6 +9,7 @@ const Login = () => {
 
   const handleSuccess = async (credentialResponse: any) => {
     try {
+      // const res = await axios.post("http://192.168.20.5:4000/api/auth/google", {
       const res = await axios.post("http://localhost:4000/api/auth/google", {
         token: credentialResponse.credential,
       });
