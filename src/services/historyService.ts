@@ -1,16 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
+import { API_ENDPOINTS } from "../constants/apiEndpoints";
 
-export const getHistory = async (page: number, sort: string,userId:string) => {
-  // const res = await axios.get(
-  //   `http://localhost:4000/api/history?page=${page}&sort=${sort}`
-  // );
-  // return res.data;
-
-  const res = await axios.get(
-    `http://localhost:4000/api/history`,
-    {
-      params: { page, sort, userId } // ✅ send userId
-    }
-  );
+export const getHistory = async (page: number,sort: string,userId: string) => {
+  const res = await axiosInstance.get(API_ENDPOINTS.HISTORY.BASE, {params: { page, sort, userId },});
   return res.data;
 };
