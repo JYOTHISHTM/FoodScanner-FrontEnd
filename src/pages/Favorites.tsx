@@ -17,17 +17,19 @@ const Favorites = () => {
         console.log("userId on mount:", userId); // 👈 add this
     }, [userId]);
 
+   
+
     const fetchData = async () => {
-        if (!userId) return;
+    if (!userId) return;
 
-        const res = await getFavorites(page, sort, search, userId);
+    const data = await getFavorites(page, sort, search, userId);
 
-        console.log("FULL RESPONSE 👉", res.data);   // 👈 ADD THIS
-        console.log("FIRST ITEM 👉", res.data.favorites[0]); // 👈 ADD
+    console.log("FULL RESPONSE 👉", data);   // ✅ correct
+    console.log("FIRST ITEM 👉", data.favorites[0]); // ✅ correct
 
-        setData(res.data.favorites);
-        setPages(res.data.pages);
-    };
+    setData(data.favorites);
+    setPages(data.pages);
+};
 
     useEffect(() => {
         if (!userId) return;   // 🚨 STOP if no user
@@ -35,10 +37,10 @@ const Favorites = () => {
         fetchData();
     }, [page, sort, search, userId]);
 
-    const handleToggle = async (productId : string) => {
+    const handleToggle = async (productId: string) => {
         if (!userId) return;
 
-        await toggleFavorite(userId, productId );
+        await toggleFavorite(userId, productId);
         fetchData();
     };
 
@@ -79,7 +81,7 @@ const Favorites = () => {
                                 {new Date(item.createdAt).toLocaleDateString()}
                             </p>
                         </div>
-                        <button 
+                        <button
                             onClick={() => handleToggle(item.productId)}
                             className="text-2xl transition text-red-500 hover:text-red-600"
                         >

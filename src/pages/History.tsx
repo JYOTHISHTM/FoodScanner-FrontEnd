@@ -23,28 +23,28 @@ const History = () => {
 
     setLoading(true);
     try {
-      const data = await getHistory(page, sort,userId);
-      setScans(data.scans);      
+      const data = await getHistory(page, sort, userId);
+      setScans(data.scans);
       setPages(data.pages);
-      
-      console.log("FIRST SCAN 👉", data.scans[0]); 
-      console.log("FULL SCAN 👉", JSON.stringify(data.scans[0], null, 2));
-      
-      const favMap: Record<string, boolean> = {};
-      
-   await Promise.all(
-  data.scans.map(async (item: any) => {
-    
-    if (!item.productId) return;
 
-    try {
-      const res = await checkFavorite(userId, item.productId);
-      favMap[item.productId] = res.data.isFavorite;
-    } catch {
-      favMap[item.productId] = false;
-    }
-  })
-);
+      console.log("FIRST SCAN 👉", data.scans[0]);
+      console.log("FULL SCAN 👉", JSON.stringify(data.scans[0], null, 2));
+
+      const favMap: Record<string, boolean> = {};
+
+      await Promise.all(
+        data.scans.map(async (item: any) => {
+
+          if (!item.productId) return;
+
+          try {
+            const res = await checkFavorite(userId, item.productId)
+            favMap[item.productId] = res.isFavorite;
+          } catch {
+            favMap[item.productId] = false;
+          }
+        })
+      );
 
       setFavorites(favMap);
     } catch (err) {
@@ -59,17 +59,17 @@ const History = () => {
   }, [page, sort, userId]);
 
   // ✅ Toggle favorite
-  const handleFav = async (productId : string) => {
+  const handleFav = async (productId: string) => {
     if (!userId) return;
 
     // optimistic update
     setFavorites((prev) => ({
       ...prev,
-      [productId ]: !prev[productId ],
+      [productId]: !prev[productId],
     }));
 
     try {
-      await toggleFavorite(userId, productId );
+      await toggleFavorite(userId, productId);
     } catch (err) {
       console.error(err);
     }

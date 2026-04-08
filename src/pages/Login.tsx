@@ -1,7 +1,8 @@
 import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { googleLogin } from "../services/authService";
+
 
 const Login = () => {
 
@@ -11,21 +12,17 @@ const Login = () => {
 
   
 
-  const handleSuccess = async (credentialResponse: any) => {
-    try {
-      // const res = await axios.post("http://192.168.20.5:4000/api/auth/google", {
-      const res = await axios.post("http://localhost:4000/api/auth/google", {
-        token: credentialResponse.credential,
-      });
+ const handleSuccess = async (credentialResponse: any) => {
+  try {
+    const data = await googleLogin(credentialResponse.credential);
 
-      localStorage.setItem("token", res.data.token);
-      login(res.data.token, res.data.user);
-      navigate("/");
-    } catch (error) {
-      console.error("Login Failed", error);
-    }
-  };
-
+    localStorage.setItem("token", data.token);
+    login(data.token, data.user);
+    navigate("/");
+  } catch (error) {
+    console.error("Login Failed", error);
+  }
+};
   return (
     <div className="min-h-screen flex">
 
