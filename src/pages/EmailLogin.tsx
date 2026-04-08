@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { sendOtp, verifyOtp } from "../services/authService";
+
 
 const EmailLogin = () => {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ const EmailLogin = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const sendOtp = async () => {
+  const sendOtpHandler = async () => {
     if (!email || !validateEmail(email)) {
       toast.error("Please enter a valid email");
       return;
@@ -44,20 +45,19 @@ const EmailLogin = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:4000/api/auth/send-otp", { email });
+      await sendOtp(email);
       toast.success("OTP sent successfully!");
       setStep("otp");
       setTimer(60);
       setCanResend(false);
       setOtp("");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to send OTP");
+      toast.error(err?.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
   };
-
-  const verifyOtp = async () => {
+  const verifyOtpHandler = async () => {
     if (!otp || otp.length !== 4) {
       toast.error("Please enter 4-digit OTP");
       return;
@@ -67,12 +67,9 @@ const EmailLogin = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/verify-otp",
-        { email, otp }
-      );
+      const data = await verifyOtp(email, otp);
 
-      login(res.data.token, res.data.user);
+      login(data.token, data.user);
       toast.success("Login successful!");
       navigate("/");
     } catch (err: any) {
@@ -82,21 +79,20 @@ const EmailLogin = () => {
       setLoading(false);
     }
   };
-
-  const resendOtp = async () => {
+  const resendOtpHandler = async () => {
     if (!canResend) return;
 
     setResendLoading(true);
     setError("");
 
     try {
-      await axios.post("http://localhost:4000/api/auth/send-otp", { email });
+      await sendOtp(email);
       toast.success("New OTP sent!");
       setTimer(60);
       setCanResend(false);
       setOtp("");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to resend OTP");
+      toast.error(err?.response?.data?.message || "Failed to resend OTP");
     } finally {
       setResendLoading(false);
     }
@@ -121,7 +117,7 @@ const EmailLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <button
-              onClick={sendOtp}
+              onClick={sendOtpHandler}
               disabled={loading}
               className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-medium disabled:opacity-70"
             >
@@ -160,7 +156,7 @@ const EmailLogin = () => {
                 </p>
               ) : (
                 <button
-                  onClick={resendOtp}
+                  onClick={resendOtpHandler}
                   disabled={resendLoading}
                   className="text-green-600 hover:text-green-700 font-medium"
                 >
@@ -170,7 +166,7 @@ const EmailLogin = () => {
             </div>
 
             <button
-              onClick={verifyOtp}
+              onClick={verifyOtpHandler}
               disabled={loading || otp.length !== 4}
               className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-medium disabled:opacity-70"
             >

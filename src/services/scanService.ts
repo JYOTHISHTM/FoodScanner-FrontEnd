@@ -1,10 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
+import { API_ENDPOINTS } from "../constants/apiEndpoints";
 
-export const scanProduct = async (barcode: string, userId: string) => {
-  const res = await axios.post("http://localhost:4000/api/scan", {
-    barcode,
-    userId,
-  });
-
+export const scanProduct = async (barcode: string,userId: string) => {
+  const res = await axiosInstance.post(API_ENDPOINTS.SCAN.BASE,{barcode,userId,});
   return res.data;
 };

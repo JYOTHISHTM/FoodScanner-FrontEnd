@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { updateProfile } from "../services/profileService";
 
 const allergyOptions = [
   "Milk", "Egg", "Fish", "Peanut", "Tree Nuts",
@@ -51,23 +51,19 @@ const Profile = () => {
     return null;
   };
 
-  // ✅ Save Profile
   const handleProfileSave = async () => {
     const error = validate();
     if (error) return toast.error(error);
 
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/profile/${user?._id}`,
-        {
-          age: form.age,
-          gender: form.gender,
-          weight: form.weight,
-          height: form.height,
-        }
-      );
+      const data = await updateProfile(user?._id!, {
+        age: form.age,
+        gender: form.gender,
+        weight: form.weight,
+        height: form.height,
+      });
 
-      login(token!, res.data);
+      login(token!, data);
       setIsEditingProfile(false);
 
       toast.success("Profile updated ✅");
@@ -76,17 +72,14 @@ const Profile = () => {
     }
   };
 
-  // ✅ Save Allergies
+
   const handleAllergySave = async () => {
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/profile/${user?._id}`,
-        {
-          allergies: form.allergies,
-        }
-      );
+      const data = await updateProfile(user?._id!, {
+        allergies: form.allergies,
+      });
 
-      login(token!, res.data);
+      login(token!, data);
       setIsEditingAllergy(false);
       setShowPopup(false);
 
@@ -219,8 +212,8 @@ const Profile = () => {
                     key={item}
                     onClick={() => toggleAllergy(item)}
                     className={`p-2 border rounded cursor-pointer text-center text-sm ${form.allergies.includes(item)
-                        ? "bg-red-200"
-                        : "hover:bg-green-100"
+                      ? "bg-red-200"
+                      : "hover:bg-green-100"
                       }`}
                   >
                     {item}
