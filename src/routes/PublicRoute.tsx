@@ -7,7 +7,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { isLoggedIn } = useAuth();
 
   if (isLoggedIn) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/" />;
   }
 
   return children;

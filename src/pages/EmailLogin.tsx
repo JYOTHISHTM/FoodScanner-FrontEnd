@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { sendOtp, verifyOtp } from "../services/authService";
 
-
 const EmailLogin = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -57,6 +56,7 @@ const EmailLogin = () => {
       setLoading(false);
     }
   };
+
   const verifyOtpHandler = async () => {
     if (!otp || otp.length !== 4) {
       toast.error("Please enter 4-digit OTP");
@@ -68,7 +68,6 @@ const EmailLogin = () => {
 
     try {
       const data = await verifyOtp(email, otp);
-
       login(data.token, data.user);
       toast.success("Login successful!");
       navigate("/");
@@ -79,6 +78,7 @@ const EmailLogin = () => {
       setLoading(false);
     }
   };
+
   const resendOtpHandler = async () => {
     if (!canResend) return;
 
@@ -99,11 +99,11 @@ const EmailLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Toaster position="top-center" />
 
-      <div className="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 w-full max-w-md border border-gray-100">
+        <h2 className="text-3xl font-semibold mb-8 text-center text-gray-900">
           {step === "email" ? "Login with Email" : "Enter OTP"}
         </h2>
 
@@ -112,14 +112,14 @@ const EmailLogin = () => {
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:border-green-500"
+              className="w-full border border-gray-300 p-4 rounded-2xl mb-6 focus:outline-none focus:border-gray-900 text-gray-800 placeholder:text-gray-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <button
               onClick={sendOtpHandler}
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-medium disabled:opacity-70"
+              className="w-full bg-gray-900 hover:bg-black text-white p-4 rounded-2xl font-medium text-lg transition-all disabled:opacity-70"
             >
               {loading ? "Sending OTP..." : "Send OTP"}
             </button>
@@ -128,16 +128,16 @@ const EmailLogin = () => {
 
         {step === "otp" && (
           <>
-            <p className="text-center text-gray-600 mb-4">
+            <p className="text-center text-gray-600 mb-6">
               We sent a 4-digit code to <br />
-              <strong>{email}</strong>
+              <strong className="text-gray-900">{email}</strong>
             </p>
 
             <input
               type="text"
               maxLength={4}
-              placeholder="Enter 4-digit OTP"
-              className="w-full border border-gray-300 p-3 rounded-lg mb-2 text-center text-2xl tracking-widest focus:outline-none focus:border-green-500"
+              placeholder="0000"
+              className="w-full border border-gray-300 p-6 rounded-2xl mb-4 text-center text-4xl tracking-widest focus:outline-none focus:border-gray-900"
               value={otp}
               onChange={(e) => {
                 const val = e.target.value.replace(/[^0-9]/g, "");
@@ -146,19 +146,19 @@ const EmailLogin = () => {
               }}
             />
 
-            {error && <p className="text-red-500 text-sm text-center mb-3">{error}</p>}
+            {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
             {/* Timer & Resend */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-6">
               {timer > 0 ? (
                 <p className="text-sm text-gray-500">
-                  Resend OTP in <span className="font-semibold">{timer}s</span>
+                  Resend OTP in <span className="font-semibold text-gray-700">{timer}s</span>
                 </p>
               ) : (
                 <button
                   onClick={resendOtpHandler}
                   disabled={resendLoading}
-                  className="text-green-600 hover:text-green-700 font-medium"
+                  className="text-gray-900 hover:text-black font-medium"
                 >
                   {resendLoading ? "Sending..." : "Resend OTP"}
                 </button>
@@ -168,7 +168,7 @@ const EmailLogin = () => {
             <button
               onClick={verifyOtpHandler}
               disabled={loading || otp.length !== 4}
-              className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-medium disabled:opacity-70"
+              className="w-full bg-gray-900 hover:bg-black text-white p-4 rounded-2xl font-medium text-lg transition-all disabled:opacity-70"
             >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>

@@ -24,18 +24,18 @@ const AdminLogin = () => {
         password,
       });
 
-      console.log("ff",res);
-      console.log("token",res.data.token);
-      console.log("data",res.data);
-      
+      console.log("ff", res);
+      console.log("token", res.data.token);
+      console.log("data", res.data);
+
 
       login(res.data.token, res.data.admin);
       toast.success("Admin Login Successful!");
-      navigate("/admin/dashboard");
+      navigate("/admin/users");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Invalid credentials");
-      console.log("error in admin login",err);
-      
+      console.log("error in admin login", err);
+
     } finally {
       setLoading(false);
     }
