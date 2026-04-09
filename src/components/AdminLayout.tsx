@@ -2,7 +2,7 @@
 
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../context/AdminAuthContext";
-import { LogOut, Users, Home } from "lucide-react";
+import { LogOut, Users } from "lucide-react";
 
 const AdminLayout = () => {
   const { admin, logout } = useAdminAuth();
@@ -25,13 +25,7 @@ const AdminLayout = () => {
           <div className="flex items-center gap-6">
             <span className="text-sm">Welcome, <strong>{admin?.name}</strong></span>
             
-            <button
-              onClick={() => navigate("/admin/dashboard")}
-              className="flex items-center gap-2 hover:text-green-400"
-            >
-              <Home size={20} /> Dashboard
-            </button>
-            
+        
             <button
               onClick={() => navigate("/admin/users")}
               className="flex items-center gap-2 hover:text-green-400"
