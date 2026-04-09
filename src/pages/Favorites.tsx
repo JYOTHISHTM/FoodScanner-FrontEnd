@@ -1,105 +1,162 @@
+
+
 import { useEffect, useState } from "react";
 import { getFavorites, toggleFavorite } from "../services/favoritesService";
 import { useAuth } from "../hooks/useAuth";
 
 const Favorites = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [page, setPage] = useState(1);
-    const [pages, setPages] = useState(1);
-    const [sort, setSort] = useState("");
-    const [search, setSearch] = useState("");
+  const [data, setData] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [sort, setSort] = useState("");
+  const [search, setSearch] = useState("");
 
+  const { user } = useAuth();
+  const userId = user?._id;
 
-    const { user } = useAuth();
-    const userId = user?._id;
-
-    useEffect(() => {
-        console.log("userId on mount:", userId); // 👈 add this
-    }, [userId]);
-
-   
-
-    const fetchData = async () => {
+  const fetchData = async () => {
     if (!userId) return;
 
     const data = await getFavorites(page, sort, search, userId);
 
-    console.log("FULL RESPONSE 👉", data);   // ✅ correct
-    console.log("FIRST ITEM 👉", data.favorites[0]); // ✅ correct
+    setData(data.favorites || []);
+    setPages(data.pages || 1);
+  };
 
-    setData(data.favorites);
-    setPages(data.pages);
-};
+  useEffect(() => {
+    if (!userId) return;
+    fetchData();
+  }, [page, sort, search, userId]);
 
-    useEffect(() => {
-        if (!userId) return;   // 🚨 STOP if no user
+  const handleToggle = async (productId: string) => {
+    if (!userId) return;
 
-        fetchData();
-    }, [page, sort, search, userId]);
+    await toggleFavorite(userId, productId);
+    fetchData();
+  };
 
-    const handleToggle = async (productId: string) => {
-        if (!userId) return;
+  return (
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        
+        {/* HEADER (same as History) */}
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-semibold text-gray-900">
+            Favorites
+          </h1>
 
-        await toggleFavorite(userId, productId);
-        fetchData();
-    };
+          {data.length > 0 && (
+            <div className="flex gap-3">
+              <input
+                placeholder="Search..."
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-white border border-gray-300 px-4 py-2 rounded-2xl text-sm focus:outline-none focus:border-gray-900"
+              />
 
-    return (
-        <div className="p-6">
-
-            {data.length > 0 && (
-                <>
-                    <input
-                        placeholder="Search..."
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="border p-2 mb-3"
-                    />
-
-                    <select onChange={(e) => setSort(e.target.value)}>
-                        <option value="">Sort</option>
-                        <option value="az">A-Z</option>
-                        <option value="za">Z-A</option>
-                    </select>
-                </>
-            )}
-
-            {data.length === 0 && <p>No favorites yet ❤️</p>}
-
-            <div className="grid gap-4">
-                {data.map((item) => (
-                    <div key={item.productId} className="flex items-center gap-4 bg-white shadow rounded-lg p-4">
-                        <img
-                            src={item.image}
-                            className="w-16 h-16 object-contain"
-                        />
-                        <div className="flex-1">
-                            <h3 className="font-bold">{item.name}</h3>
-                            {item.brand && (
-                                <p className="text-sm text-gray-500">{item.brand}</p>
-                            )}
-                            <p className="text-xs text-gray-400">
-                                {new Date(item.createdAt).toLocaleDateString()}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => handleToggle(item.productId)}
-                            className="text-2xl transition text-red-500 hover:text-red-600"
-                        >
-                            ❤️
-                        </button>
-                    </div>
-                ))}
+              <select
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setPage(1);
+                }}
+                className="bg-white border border-gray-300 px-5 py-2.5 rounded-2xl text-sm focus:outline-none focus:border-gray-900"
+              >
+                <option value="">Sort</option>
+                <option value="az">A-Z</option>
+                <option value="za">Z-A</option>
+              </select>
             </div>
-
-            {data.length > 0 && (
-                <div>
-                    <button disabled={page === 1} onClick={() => setPage(page - 1)}>Prev</button>
-                    <span>{page}/{pages}</span>
-                    <button disabled={page === pages} onClick={() => setPage(page + 1)}>Next</button>
-                </div>
-            )}
+          )}
         </div>
-    );
+
+        {/* EMPTY */}
+        {data.length === 0 && (
+          <div className="text-center py-24">
+            <p className="text-7xl mb-4">❤️</p>
+            <p className="text-xl text-gray-600">No favorites yet</p>
+            <p className="text-gray-400 mt-2">
+              Your favorite items will appear here
+            </p>
+          </div>
+        )}
+
+        {/* LIST (same card as History) */}
+        <div className="space-y-5">
+          {data.map((item) => (
+            <div
+              key={item.productId}
+              className="bg-white border border-gray-100 rounded-3xl p-5 flex items-center gap-5 hover:border-gray-200 transition-all"
+            >
+              {/* Image */}
+              <div className="w-20 h-20 bg-gray-100 rounded-2xl overflow-hidden flex-shrink-0">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* Info */}
+              <div className="flex-1">
+                <h3 className="font-medium text-lg text-gray-900 leading-tight">
+                  {item.name}
+                </h3>
+
+                {item.brand && (
+                  <p className="text-gray-500 text-sm mt-1">
+                    {item.brand}
+                  </p>
+                )}
+
+                <p className="text-xs text-gray-400 mt-2">
+                  {new Date(item.createdAt).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+
+              {/* Favorite Button */}
+              <button
+                onClick={() => handleToggle(item.productId)}
+                className="text-3xl transition-all hover:scale-110 px-2"
+              >
+                ❤️
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* PAGINATION (same style) */}
+        {data.length > 0 && (
+          <div className="flex justify-center mt-12">
+            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-3xl px-4 py-2 shadow-sm">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="px-6 py-2 rounded-2xl hover:bg-gray-100 disabled:opacity-40"
+              >
+                ← Prev
+              </button>
+
+              <span className="px-4 font-medium text-gray-700">
+                {page} / {pages}
+              </span>
+
+              {page < pages && (
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  className="px-6 py-2 bg-gray-900 text-white rounded-2xl hover:bg-black"
+                >
+                  Next →
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Favorites;
