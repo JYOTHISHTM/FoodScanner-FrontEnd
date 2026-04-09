@@ -3,76 +3,64 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { googleLogin } from "../services/authService";
 
-
 const Login = () => {
-
-
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  
+  const handleSuccess = async (credentialResponse: any) => {
+    try {
+      const data = await googleLogin(credentialResponse.credential);
+      localStorage.setItem("token", data.token);
+      login(data.token, data.user);
+      navigate("/");
+    } catch (error) {
+      console.error("Login Failed", error);
+    }
+  };
 
- const handleSuccess = async (credentialResponse: any) => {
-  try {
-    const data = await googleLogin(credentialResponse.credential);
-
-    localStorage.setItem("token", data.token);
-    login(data.token, data.user);
-    navigate("/");
-  } catch (error) {
-    console.error("Login Failed", error);
-  }
-};
   return (
-    <div className="min-h-screen flex">
-
-      {/* LEFT SIDE */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-green-50 px-6">
-
-        <h1 className="text-3xl font-bold text-green-800 mb-6">
-          Welcome Back
-        </h1>
-
-        <div className="w-full max-w-sm space-y-4">
+    <div className="min-h-screen flex bg-gray-50">
+      {/* LEFT SIDE - Login Form */}
+      <div className="w-full  flex items-center justify-center p-4 md:p-8">
+        <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-10 md:p-12 border border-gray-100">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-semibold text-gray-900 mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Sign in to continue to FoodScanner
+            </p>
+          </div>
 
           {/* Google Login */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-8">
             <GoogleLogin
               onSuccess={handleSuccess}
               onError={() => console.log("Login Failed")}
             />
           </div>
 
-          {/* OR */}
-          <div className="flex items-center gap-2">
-            <hr className="flex-grow border-green-300" />
-            <span className="text-green-600 text-sm">OR</span>
-            <hr className="flex-grow border-green-300" />
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-8">
+            <hr className="flex-grow border-gray-300" />
+            <span className="text-gray-500 text-sm font-medium">OR</span>
+            <hr className="flex-grow border-gray-300" />
           </div>
 
-          {/* Email Button */}
+          {/* Email Login Button */}
           <button
             onClick={() => navigate("/email-login")}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"
+            className="w-full bg-gray-900 hover:bg-black text-white py-3.5 rounded-2xl font-medium text-lg transition-all duration-200"
           >
-            Continue with email
+            Continue with Email
           </button>
 
-          {/* Caution */}
-          <p className="text-xs text-green-700 text-center mt-4">
+          {/* Note */}
+          <p className="text-center text-sm text-gray-500 mt-8">
             ⚠️ Please use your registered account. Unauthorized access is restricted.
           </p>
-
         </div>
-      </div>
-
-      {/* RIGHT SIDE */}
-      <div className="hidden md:flex w-1/2 bg-green-100 items-center justify-center">
-        <img
-          src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc"
-          alt="productId"
-          className="w-2/3 rounded-xl shadow-lg"
-        />
       </div>
 
     </div>
