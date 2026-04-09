@@ -23,4 +23,9 @@ PRODUCT: {
 SCAN: {
   BASE: "/scan",
 },
+ADMIN: {
+  LOGIN: "/admin/login",
+  USERS: "/admin/users",
+   TOGGLE_BLOCK: (userId: string) => `/admin/users/${userId}/block`,
+},
 };
