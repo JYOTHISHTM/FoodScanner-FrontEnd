@@ -1,10 +1,10 @@
 
 
 import { useState } from "react";
-import axios from "axios";
 import { useAdminAuth } from "../context/AdminAuthContext";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { adminLoginService } from "../services/adminService";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -14,33 +14,23 @@ const AdminLogin = () => {
   const { login } = useAdminAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
 
-    try {
-      const res = await axios.post("http://localhost:4000/api/admin/login", {
-        email,
-        password,
-      });
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-      console.log("ff", res);
-      console.log("token", res.data.token);
-      console.log("data", res.data);
-
-
-      login(res.data.token, res.data.admin);
-      toast.success("Admin Login Successful!");
-      navigate("/admin/users");
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Invalid credentials");
-      console.log("error in admin login", err);
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  try {
+    const data = await adminLoginService(email, password);
+    login(data.token, data.admin);
+    toast.success("Admin Login Successful!");
+    navigate("/admin/users");
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Invalid credentials");
+    console.log("error in admin login", err);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <Toaster position="top-center" />
