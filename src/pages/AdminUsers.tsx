@@ -1,7 +1,7 @@
 
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { fetchUsersService, toggleBlockService } from "../services/adminService";
 import toast from "react-hot-toast";
 
 interface User {
@@ -16,12 +16,11 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
+
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/admin/users", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` }
-      });
-      setUsers(res.data);
+      const data = await fetchUsersService();
+      setUsers(data);
     } catch (err) {
       toast.error("Failed to load users");
     } finally {
@@ -31,13 +30,9 @@ const AdminUsers = () => {
 
   const toggleBlock = async (userId: string) => {
     try {
-      const res = await axios.patch(
-        `http://localhost:4000/api/admin/users/${userId}/block`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` } }
-      );
-      toast.success(res.data.message);
-      fetchUsers(); // refresh list
+      const data = await toggleBlockService(userId);
+      toast.success(data.message);
+      fetchUsers();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Action failed");
     }
