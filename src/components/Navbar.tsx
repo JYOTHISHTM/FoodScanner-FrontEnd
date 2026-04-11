@@ -24,7 +24,6 @@ const Navbar = () => {
       {isLoggedIn && (
         <div className="flex gap-2 items-center">
           <Link to="/" className={linkClass("/")}>Home</Link>
-          {/* <Link to="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link> */}
           <Link to="/profile" className={linkClass("/profile")}>Profile</Link>
           <Link to="/history" className={linkClass("/history")}>History</Link>
           <Link to="/favorites" className={linkClass("/favorites")}>Favorites</Link>
