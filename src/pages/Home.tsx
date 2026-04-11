@@ -115,13 +115,13 @@ const videoCallbackRef = (el: HTMLVideoElement | null) => {
     return { label: "Unhealthy 🔴", color: "bg-red-500" };
   };
 
-  const getWarnings = (data: any) => {
-    const warnings = [];
-    if (data.sugar > 20) warnings.push("High Sugar");
-    if (data.fat > 20) warnings.push("High Fat");
-    if (data.nova === 4) warnings.push("Ultra Processed");
-    return warnings;
-  };
+  // const getWarnings = (data: any) => {
+  //   const warnings = [];
+  //   if (data.sugar > 20) warnings.push("High Sugar");
+  //   if (data.fat > 20) warnings.push("High Fat");
+  //   if (data.nova === 4) warnings.push("Ultra Processed");
+  //   return warnings;
+  // };
 
   const checkAllergies = (product: any, userAllergies: string[]) => {
     if (!product || !userAllergies) return [];
