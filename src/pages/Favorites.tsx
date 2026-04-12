@@ -8,8 +8,10 @@ const Favorites = () => {
   const [data, setData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("az");
   const [search, setSearch] = useState("");
+  const [total, setTotal] = useState(0);
+
 
   const { user } = useAuth();
   const userId = user?._id;
@@ -21,6 +23,7 @@ const Favorites = () => {
 
     setData(data.favorites || []);
     setPages(data.pages || 1);
+    setTotal(data.totalFavorites || 0);
   };
 
   useEffect(() => {
@@ -38,18 +41,24 @@ const Favorites = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* HEADER (same as History) */}
         <div className="flex justify-between items-center mb-10">
           <h1 className="text-3xl font-semibold text-gray-900">
             Favorites
           </h1>
 
-          {data.length > 0 && (
+          {total > 0 && (
             <div className="flex gap-3">
               <input
                 placeholder="Search..."
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  console.log(e.target.value);
+
+                  setPage(1)
+                }}
+
                 className="bg-white border border-gray-300 px-4 py-2 rounded-2xl text-sm focus:outline-none focus:border-gray-900"
               />
 
@@ -60,7 +69,6 @@ const Favorites = () => {
                 }}
                 className="bg-white border border-gray-300 px-5 py-2.5 rounded-2xl text-sm focus:outline-none focus:border-gray-900"
               >
-                <option value="">Sort</option>
                 <option value="az">A-Z</option>
                 <option value="za">Z-A</option>
               </select>
@@ -72,10 +80,26 @@ const Favorites = () => {
         {data.length === 0 && (
           <div className="text-center py-24">
             <p className="text-7xl mb-4">❤️</p>
-            <p className="text-xl text-gray-600">No favorites yet</p>
-            <p className="text-gray-400 mt-2">
-              Your favorite items will appear here
-            </p>
+
+            {search ? (
+              <>
+                <p className="text-xl text-gray-600">
+                  No results found
+                </p>
+                <p className="text-gray-400 mt-2">
+                  Try a different keyword
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-xl text-gray-600">
+                  No favorites yet
+                </p>
+                <p className="text-gray-400 mt-2">
+                  Your favorite items will appear here
+                </p>
+              </>
+            )}
           </div>
         )}
 
