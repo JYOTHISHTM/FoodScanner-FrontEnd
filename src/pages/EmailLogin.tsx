@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { sendOtp, verifyOtp } from "../services/authService";
 
+
+
 const EmailLogin = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");

@@ -2,6 +2,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { googleLogin } from "../services/authService";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,8 +14,18 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       login(data.token, data.user);
       navigate("/");
-    } catch (error) {
-      console.error("Login Failed", error);
+    } catch (error: any) {
+      console.log("ERROR 👉", error);
+
+      let message = "Login failed";
+
+      if (error.response && error.response.data) {
+        message = error.response.data.message;
+      } else if (error.message) {
+        message = error.message;
+      }
+
+      toast.error(message);
     }
   };
 
